@@ -1,16 +1,15 @@
+// 元のサイトにて、下記イベントを発火してやればよい。
+// var event = new CustomEvent('chromeOpen', {
+// 	detail: {
+// 		url: url
+// 	}
+// });
+// window.dispatchEvent(event);
 
-document.body.addEventListener('click', evt => {
-	// ユーザーの操作によるイベントならisTrusted == true
-	// If event is fired by user's operation then isTrusted == true.
-	// Chrome 46.0～
-	// https://developer.mozilla.org/ja/docs/Web/API/Event/isTrusted
-	if (!evt.isTrusted) return;
-	let target = evt.target;
-	while (target && target.tagName !== 'A') {
-		target = target.parentNode;
-	}
-	if (target) {
-		const url = target.href;
+window.addEventListener('chromeOpen', evt => {
+	console.log('event captured!');
+
+		const url = evt.detail.url;
 		if (url.startsWith('file://')) {
 			evt.preventDefault();
 			// 拡張が再読み込みされた場合エラーになるので捕捉
@@ -22,5 +21,4 @@ document.body.addEventListener('click', evt => {
 				});
 			} catch (e) {}
 		}
-	}
 });
